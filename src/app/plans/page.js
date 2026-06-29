@@ -128,7 +128,7 @@ function PlanCard({ plan, highlight }) {
         </ul>
       )}
 
-      
+      <a
         href="/signup"
         className={[
           "mt-8 flex w-full items-center justify-center rounded-md px-6 py-3 text-sm font-semibold transition-all",
