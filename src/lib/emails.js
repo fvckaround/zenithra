@@ -1,6 +1,7 @@
 import { sendEmail } from "@/lib/otp";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 function baseTemplate(content) {
   return `
@@ -242,6 +243,164 @@ export async function sendWelcomeEmail({ to, fullName }) {
         <p style="margin:0;font-size:13px;color:#8C93A6;">3. Watch your balance grow daily</p>
       </div>
       ${btn("Start Investing", `${APP_URL}/dashboard`)}
+    `),
+  });
+}
+
+// ── Admin notifications ───────────────────────────────────────────────────────
+export async function sendAdminNewUserEmail({ fullName, email }) {
+  if (!ADMIN_EMAIL) return;
+  await sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `New user registered — ${fullName}`,
+    html: baseTemplate(`
+      <p style="margin:0 0 6px;font-size:22px;font-weight:600;color:#F5F4F0;">New User Registered</p>
+      <p style="margin:0 0 28px;font-size:14px;color:#8C93A6;">A new user has just created and verified an account on Zenithra.</p>
+      <div style="background-color:#080B14;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Full Name</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${fullName}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;">Email</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;">${email}</td>
+          </tr>
+        </table>
+      </div>
+      ${btn("View Users", `${APP_URL}/admin/users`)}
+    `),
+  });
+}
+
+export async function sendAdminDepositEmail({ fullName, email, amount, coin, txHash }) {
+  if (!ADMIN_EMAIL) return;
+  await sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `New deposit request — $${Number(amount).toLocaleString()} from ${fullName}`,
+    html: baseTemplate(`
+      <p style="margin:0 0 6px;font-size:22px;font-weight:600;color:#F5F4F0;">New Deposit Request</p>
+      <p style="margin:0 0 28px;font-size:14px;color:#8C93A6;">A user has submitted a deposit and is awaiting your approval.</p>
+      <div style="background-color:#080B14;border:1px solid rgba(212,175,55,0.2);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">User</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${fullName}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Email</td>
+            <td style="font-size:13px;color:#F5F4F0;text-align:right;padding-bottom:10px;">${email}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Amount</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">$${Number(amount).toLocaleString()}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Coin</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${coin}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;">Tx Hash</td>
+            <td style="font-size:11px;color:#F5F4F0;font-family:monospace;text-align:right;word-break:break-all;">${txHash || "Not provided"}</td>
+          </tr>
+        </table>
+      </div>
+      ${btn("Review Deposit", `${APP_URL}/admin/deposits`)}
+    `),
+  });
+}
+
+export async function sendAdminWithdrawalEmail({ fullName, email, amount, coin, walletAddress }) {
+  if (!ADMIN_EMAIL) return;
+  await sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `New withdrawal request — $${Number(amount).toLocaleString()} from ${fullName}`,
+    html: baseTemplate(`
+      <p style="margin:0 0 6px;font-size:22px;font-weight:600;color:#F5F4F0;">New Withdrawal Request</p>
+      <p style="margin:0 0 28px;font-size:14px;color:#8C93A6;">A user has submitted a withdrawal request and is awaiting your approval.</p>
+      <div style="background-color:#080B14;border:1px solid rgba(212,175,55,0.2);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">User</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${fullName}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Email</td>
+            <td style="font-size:13px;color:#F5F4F0;text-align:right;padding-bottom:10px;">${email}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Amount</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">$${Number(amount).toLocaleString()}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Coin</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${coin}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;">Wallet</td>
+            <td style="font-size:11px;color:#F5F4F0;font-family:monospace;text-align:right;word-break:break-all;">${walletAddress}</td>
+          </tr>
+        </table>
+      </div>
+      ${btn("Review Withdrawal", `${APP_URL}/admin/withdrawals`)}
+    `),
+  });
+}
+
+export async function sendAdminKycEmail({ fullName, email }) {
+  if (!ADMIN_EMAIL) return;
+  await sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `New KYC submission — ${fullName}`,
+    html: baseTemplate(`
+      <p style="margin:0 0 6px;font-size:22px;font-weight:600;color:#F5F4F0;">New KYC Submission</p>
+      <p style="margin:0 0 28px;font-size:14px;color:#8C93A6;">A user has submitted their identity documents for verification.</p>
+      <div style="background-color:#080B14;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">User</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${fullName}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;">Email</td>
+            <td style="font-size:13px;color:#F5F4F0;text-align:right;">${email}</td>
+          </tr>
+        </table>
+      </div>
+      ${btn("Review KYC", `${APP_URL}/admin/kyc`)}
+    `),
+  });
+}
+
+export async function sendAdminNewInvestmentEmail({ fullName, email, planName, amount }) {
+  if (!ADMIN_EMAIL) return;
+  await sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `New investment — ${fullName} invested $${Number(amount).toLocaleString()} in ${planName}`,
+    html: baseTemplate(`
+      <p style="margin:0 0 6px;font-size:22px;font-weight:600;color:#F5F4F0;">New Investment Started</p>
+      <p style="margin:0 0 28px;font-size:14px;color:#8C93A6;">A user has started a new investment plan.</p>
+      <div style="background-color:#080B14;border:1px solid rgba(212,175,55,0.2);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">User</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${fullName}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Email</td>
+            <td style="font-size:13px;color:#F5F4F0;text-align:right;padding-bottom:10px;">${email}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;padding-bottom:10px;">Plan</td>
+            <td style="font-size:13px;color:#F5F4F0;font-weight:600;text-align:right;padding-bottom:10px;">${planName}</td>
+          </tr>
+          <tr>
+            <td style="font-size:13px;color:#8C93A6;">Amount</td>
+            <td style="font-size:13px;color:#D4AF37;font-weight:600;text-align:right;">$${Number(amount).toLocaleString()}</td>
+          </tr>
+        </table>
+      </div>
+      ${btn("View Investments", `${APP_URL}/admin/investments`)}
     `),
   });
 }
