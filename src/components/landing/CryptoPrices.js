@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import Container from "@/components/ui/Container";
 import ScrollReveal from "@/components/ui/ScrollReveal";
@@ -52,7 +52,8 @@ export default function CryptoPrices() {
   const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
-  const [search, setSearch] = useState("");
+  const [isPaused, setIsPaused] = useState(false);
+  const trackRef = useRef(null);
 
   const fetchPrices = async () => {
     try {
@@ -83,11 +84,8 @@ export default function CryptoPrices() {
     return () => clearInterval(interval);
   }, []);
 
-  const filtered = prices.filter(
-    (c) =>
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.symbol.toLowerCase().includes(search.toLowerCase())
-  );
+  // Duplicate prices for seamless infinite loop
+  const displayPrices = [...prices, ...prices];
 
   return (
     <section className="border-t border-white/5 bg-navy-900 py-16 sm:py-20">
@@ -101,54 +99,73 @@ export default function CryptoPrices() {
               <h2 className="font-display text-3xl font-medium text-ink sm:text-4xl">
                 Crypto <span className="italic text-gold-400">Prices</span>
               </h2>
+              <p className="mt-2 text-sm text-ink-muted">
+                Real-time prices across {COINS.length} assets
+              </p>
             </div>
-            <div className="flex flex-col items-end gap-2">
-              <input
-                type="text"
-                placeholder="Search coin..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-48 rounded-lg border border-white/10 bg-navy-800/60 px-4 py-2 text-sm text-ink outline-none placeholder:text-ink-faint focus:border-gold-500/50"
-              />
-              {lastUpdated && (
-                <p className="text-xs text-ink-faint">
-                  Updated {lastUpdated.toLocaleTimeString()}
-                </p>
-              )}
-            </div>
+            {lastUpdated && (
+              <p className="text-xs text-ink-faint">
+                Updated {lastUpdated.toLocaleTimeString()}
+              </p>
+            )}
           </div>
         </ScrollReveal>
+      </Container>
+
+      {/* Ticker */}
+      <div
+        className="relative overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Left fade */}
+        <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-navy-900 to-transparent" />
+        {/* Right fade */}
+        <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-navy-900 to-transparent" />
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-            {Array(20).fill(0).map((_, i) => (
+          <div className="flex gap-4 px-6 py-4">
+            {Array(8).fill(0).map((_, i) => (
               <div
                 key={i}
-                className="h-28 animate-pulse rounded-2xl border border-white/5 bg-navy-800/40"
+                className="h-24 w-44 flex-shrink-0 animate-pulse rounded-2xl border border-white/5 bg-navy-800/40"
               />
             ))}
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-              {filtered.map((coin, i) => (
-                <ScrollReveal key={coin.id} delay={i * 0.02}>
-                  <CoinCard coin={coin} />
-                </ScrollReveal>
-              ))}
-            </div>
-            {filtered.length === 0 && (
-              <p className="mt-10 text-center text-sm text-ink-faint">
-                No coins found for &quot;{search}&quot;
-              </p>
-            )}
-          </>
+          <div
+            ref={trackRef}
+            className="flex gap-4 px-6 py-4"
+            style={{
+              animation: isPaused
+                ? "none"
+                : "ticker-slide 60s linear infinite",
+              width: "max-content",
+            }}
+          >
+            {displayPrices.map((coin, i) => (
+              <CoinCard key={`${coin.id}-${i}`} coin={coin} />
+            ))}
+          </div>
         )}
+      </div>
 
-        <p className="mt-8 text-center text-xs text-ink-faint">
-          Prices powered by CoinGecko · Updates every 60 seconds
+      <Container>
+        <p className="mt-6 text-center text-xs text-ink-faint">
+          Prices powered by CoinGecko · Updates every 60 seconds · Hover to pause
         </p>
       </Container>
+
+      <style jsx global>{`
+        @keyframes ticker-slide {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -176,33 +193,38 @@ function CoinCard({ coin }) {
   };
 
   return (
-    <div className="group rounded-2xl border border-white/5 bg-navy-800/60 p-5 transition-colors hover:border-gold-500/20 hover:bg-navy-800">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold-500/10 text-[10px] font-bold text-gold-400">
+    <div className="w-44 flex-shrink-0 cursor-default rounded-2xl border border-white/5 bg-navy-800/60 p-4 transition-all hover:border-gold-500/20 hover:bg-navy-800 hover:shadow-gold-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold-500/10 text-[9px] font-bold text-gold-400">
             {coin.symbol.slice(0, 4)}
           </div>
           <div>
-            <p className="text-sm font-medium text-ink">{coin.symbol}</p>
-            <p className="text-[10px] text-ink-faint truncate max-w-[80px]">{coin.name}</p>
+            <p className="text-xs font-semibold text-ink">{coin.symbol}</p>
+            <p className="max-w-[60px] truncate text-[9px] text-ink-faint">
+              {coin.name}
+            </p>
           </div>
         </div>
+      </div>
+
+      <p className="font-display text-base text-ink">{formatPrice(coin.price)}</p>
+
+      <div className="mt-2 flex items-center justify-between">
+        <p className="text-[9px] text-ink-faint">
+          {formatMarketCap(coin.marketCap)}
+        </p>
         <div
-          className={`flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-medium ${
+          className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-medium ${
             positive
               ? "bg-emerald-500/10 text-emerald-400"
               : "bg-red-500/10 text-red-400"
           }`}
         >
-          {positive ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+          {positive ? <TrendingUp size={8} /> : <TrendingDown size={8} />}
           {Math.abs(coin.change24h).toFixed(2)}%
         </div>
       </div>
-
-      <p className="font-display text-lg text-ink">{formatPrice(coin.price)}</p>
-      <p className="mt-1 text-[10px] text-ink-faint">
-        MCap: {formatMarketCap(coin.marketCap)}
-      </p>
     </div>
   );
 }
