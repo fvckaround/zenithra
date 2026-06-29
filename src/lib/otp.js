@@ -3,9 +3,6 @@ import bcrypt from "bcryptjs";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-console.log("[Zenithra] RESEND_API_KEY present:", !!process.env.RESEND_API_KEY);
-console.log("[Zenithra] RESEND_FROM:", process.env.RESEND_FROM);
-
 const FROM = process.env.RESEND_FROM || "onboarding@resend.dev";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const OTP_TTL_MINUTES = 10;
