@@ -1,6 +1,7 @@
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import Translator from "@/components/ui/Translator";
 
 const displayFont = Playfair_Display({
   subsets: ["latin"],
@@ -23,13 +24,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html
-      lang="en"
-      className={`${displayFont.variable} ${sansFont.variable}`}
-    >
+    <html lang="en" className={`${displayFont.variable} ${sansFont.variable}`}>
       <body className="bg-navy-900 text-ink antialiased font-sans">
         {children}
+        <Translator />
 
+        {/* Smartsupp Live Chat */}
         <Script
           id="smartsupp-init"
           strategy="afterInteractive"
