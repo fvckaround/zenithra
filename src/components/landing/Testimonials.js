@@ -35,10 +35,50 @@ const TESTIMONIALS = [
     role: "Tech Entrepreneur",
     initials: "ST",
   },
-
+  {
+    quote:
+      "I was skeptical at first, but after my first payout hit within 24 hours I was convinced. Zenithra is the real deal — nothing comes close.",
+    name: "Marcus T.",
+    role: "Retail Investor",
+    initials: "MT",
+  },
+  {
+    quote:
+      "The Growth plan has outperformed every other investment vehicle I've tried this year. My portfolio is up significantly and I haven't touched it once.",
+    name: "Elena V.",
+    role: "Portfolio Manager",
+    initials: "EV",
+  },
+  {
+    quote:
+      "What sets Zenithra apart is the admin responsiveness. Every deposit I've made was confirmed within the hour. That kind of reliability is priceless.",
+    name: "James K.",
+    role: "Angel Investor",
+    initials: "JK",
+  },
+  {
+    quote:
+      "I referred three colleagues to Zenithra and all of them thanked me for it. The referral bonus was a nice touch on top of my daily returns.",
+    name: "Claire D.",
+    role: "Financial Analyst",
+    initials: "CD",
+  },
+  {
+    quote:
+      "The KYC process was smooth and fast. Within an hour of submitting my documents I was fully verified and ready to invest. Very professional.",
+    name: "Robert H.",
+    role: "Real Estate Developer",
+    initials: "RH",
+  },
+  {
+    quote:
+      "I've been with Zenithra for six months. My returns have been consistent every single day. This is the kind of passive income I was looking for.",
+    name: "Natalie W.",
+    role: "Business Owner",
+    initials: "NW",
+  },
 ];
 
-// Group into pairs for the desktop two-card layout
 function pairUp(arr) {
   const pairs = [];
   for (let i = 0; i < arr.length; i += 2) {
@@ -73,7 +113,6 @@ export default function Testimonials() {
         </ScrollReveal>
 
         <div className="mt-14 flex items-center gap-3 sm:gap-6">
-          {/* Prev arrow */}
           <button
             onClick={goPrev}
             aria-label="Previous testimonials"
@@ -82,7 +121,6 @@ export default function Testimonials() {
             <ChevronLeft size={18} />
           </button>
 
-          {/* Cards */}
           <div className="relative flex-1 overflow-hidden">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
@@ -101,7 +139,6 @@ export default function Testimonials() {
             </AnimatePresence>
           </div>
 
-          {/* Next arrow */}
           <button
             onClick={goNext}
             aria-label="Next testimonials"
@@ -111,7 +148,6 @@ export default function Testimonials() {
           </button>
         </div>
 
-        {/* Dots */}
         <div className="mt-8 flex justify-center gap-2">
           {pairs.map((_, i) => (
             <button
@@ -136,7 +172,7 @@ function TestimonialCard({ quote, name, role, initials }) {
   return (
     <div className="flex h-full flex-col justify-between rounded-2xl border border-white/5 bg-navy-900/80 p-7 sm:p-8">
       <p className="font-display text-base italic leading-relaxed text-ink sm:text-lg">
-        “{quote}”
+        &ldquo;{quote}&rdquo;
       </p>
       <div className="mt-6 flex items-center gap-3">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/15 text-xs font-semibold text-gold-400">

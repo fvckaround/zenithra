@@ -7,10 +7,24 @@ import Button from "@/components/ui/Button";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-navy-900 pt-32 pb-20 sm:pt-40 lg:pt-48 lg:pb-32">
-      <div className="bg-grid-lines absolute inset-0 opacity-60" />
-      <div className="absolute -top-40 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gold-500/10 blur-[120px]" />
+      {/* Background image */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2232&auto=format&fit=crop')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 z-0 bg-navy-900/85" />
+      {/* Grid lines on top */}
+      <div className="bg-grid-lines absolute inset-0 z-0 opacity-40" />
+      {/* Gold glow */}
+      <div className="absolute -top-40 left-1/2 z-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gold-500/10 blur-[120px]" />
 
-      <Container className="relative grid items-center gap-16 lg:grid-cols-2 lg:gap-12">
+      <Container className="relative z-10 grid items-center gap-16 lg:grid-cols-2 lg:gap-12">
         {/* Left: copy */}
         <div>
           <motion.span

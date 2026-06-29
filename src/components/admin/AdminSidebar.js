@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -55,6 +55,30 @@ function NavLinks({ pathname, onNavigate }) {
   );
 }
 
+function LogoutButton() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore
+    }
+    router.push("/login");
+    router.refresh();
+  };
+
+  return (
+    <button
+      onClick={handleLogout}
+      className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-ink-muted transition-colors hover:bg-navy-700/50 hover:text-red-400"
+    >
+      <LogOut size={18} strokeWidth={1.75} />
+      Log Out
+    </button>
+  );
+}
+
 function SidebarContent({ pathname, onNavigate, onClose }) {
   return (
     <>
@@ -76,10 +100,7 @@ function SidebarContent({ pathname, onNavigate, onClose }) {
       </p>
       <NavLinks pathname={pathname} onNavigate={onNavigate} />
       <div className="px-4 py-6">
-        <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-ink-muted transition-colors hover:bg-navy-700/50 hover:text-red-400">
-          <LogOut size={18} strokeWidth={1.75} />
-          Log Out
-        </button>
+        <LogoutButton />
       </div>
     </>
   );

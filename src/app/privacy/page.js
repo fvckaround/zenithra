@@ -49,7 +49,7 @@ export default function PrivacyPage() {
       <LegalSection heading="6. Contact">
         <p>
           For privacy inquiries, contact{" "}
-          <span className="text-gold-400">privacy@zenithra.example</span>.
+          <span className="text-gold-400">zenithraholding@outlook.com</span>.
         </p>
       </LegalSection>
 

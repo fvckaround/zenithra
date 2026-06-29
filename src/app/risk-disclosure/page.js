@@ -20,7 +20,7 @@ export default function RiskDisclosurePage() {
             Risk Disclosure
           </h1>
           <p className="mt-4 text-sm text-ink-muted">
-            Last updated: January 1, 2025
+            Last updated: January 1, 2026
           </p>
 
           <div className="mt-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-6 py-5 text-sm text-amber-400">

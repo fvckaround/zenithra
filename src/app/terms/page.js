@@ -59,7 +59,7 @@ export default function TermsPage() {
       <LegalSection heading="7. Contact">
         <p>
           Questions about these Terms can be sent to{" "}
-          <span className="text-gold-400">legal@zenithra.example</span>.
+          <span className="text-gold-400">zenithraholding@outlook.com</span>.
         </p>
       </LegalSection>
 
