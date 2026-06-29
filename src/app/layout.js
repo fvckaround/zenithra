@@ -1,4 +1,5 @@
 import { Playfair_Display, DM_Sans } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const displayFont = Playfair_Display({
@@ -28,6 +29,20 @@ export default function RootLayout({ children }) {
     >
       <body className="bg-navy-900 text-ink antialiased font-sans">
         {children}
+
+        {/* Smartsupp Live Chat */}
+        <Script id="smartsupp" strategy="afterInteractive">
+          {`
+            var _smartsupp = _smartsupp || {};
+            _smartsupp.key = '2cc7629c53f1a59a5d9096fcaf4a29f29d4b02e2';
+            window.smartsupp||(function(d) {
+              var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+              s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+              c.type='text/javascript';c.charset='utf-8';c.async=true;
+              c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+            })(document);
+          `}
+        </Script>
       </body>
     </html>
   );
