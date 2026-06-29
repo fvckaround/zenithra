@@ -96,7 +96,6 @@ export default function Translator() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Load Google Translate script
     const addScript = () => {
       if (document.getElementById("google-translate-script")) {
         setLoaded(true);
@@ -110,19 +109,14 @@ export default function Translator() {
       script.async = true;
       document.body.appendChild(script);
     };
-
     addScript();
   }, []);
 
   useEffect(() => {
     if (!loaded) return;
-    // Initialize hidden Google Translate element
     if (!document.getElementById("google_translate_element")) return;
     new window.google.translate.TranslateElement(
-      {
-        pageLanguage: "en",
-        autoDisplay: false,
-      },
+      { pageLanguage: "en", autoDisplay: false },
       "google_translate_element"
     );
   }, [loaded]);
@@ -131,13 +125,10 @@ export default function Translator() {
     setSelected(langCode);
     setOpen(false);
     setSearch("");
-
-    // Use Google Translate cookie method
     const expires = new Date();
     expires.setFullYear(expires.getFullYear() + 1);
     document.cookie = `googtrans=/en/${langCode}; expires=${expires.toUTCString()}; path=/`;
     document.cookie = `googtrans=/en/${langCode}; expires=${expires.toUTCString()}; path=/; domain=${window.location.hostname}`;
-
     window.location.reload();
   };
 
@@ -149,27 +140,27 @@ export default function Translator() {
     window.location.reload();
   };
 
-  const filtered = LANGUAGES.filter((l) =>
-    l.label.toLowerCase().includes(search.toLowerCase()) ||
-    l.code.toLowerCase().includes(search.toLowerCase())
+  const filtered = LANGUAGES.filter(
+    (l) =>
+      l.label.toLowerCase().includes(search.toLowerCase()) ||
+      l.code.toLowerCase().includes(search.toLowerCase())
   );
 
   const currentLang = LANGUAGES.find((l) => l.code === selected);
 
   return (
     <>
-      {/* Hidden Google Translate element */}
       <div id="google_translate_element" className="hidden" />
 
-      {/* Translator button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 left-6 z-50">
         <div className="relative">
-          {/* Dropdown */}
           {open && (
-            <div className="absolute bottom-14 right-0 w-64 rounded-2xl border border-white/10 bg-navy-800/95 backdrop-blur-xl shadow-gold overflow-hidden">
-              <div className="p-3 border-b border-white/5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-semibold text-ink">Select Language</p>
+            <div className="absolute bottom-14 left-0 w-64 overflow-hidden rounded-2xl border border-white/10 bg-navy-800/95 shadow-gold backdrop-blur-xl">
+              <div className="border-b border-white/5 p-3">
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-xs font-semibold text-ink">
+                    Select Language
+                  </p>
                   {selected !== "en" && (
                     <button
                       onClick={resetTranslation}
@@ -195,7 +186,7 @@ export default function Translator() {
                     onClick={() => translateTo(lang.code)}
                     className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-xs transition-colors hover:bg-navy-700/50 ${
                       selected === lang.code
-                        ? "text-gold-400 bg-gold-500/5"
+                        ? "bg-gold-500/5 text-gold-400"
                         : "text-ink-muted"
                     }`}
                   >
@@ -214,10 +205,9 @@ export default function Translator() {
             </div>
           )}
 
-          {/* Toggle button */}
           <button
             onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-2 rounded-xl border border-white/10 bg-navy-800/95 px-4 py-2.5 text-sm font-medium text-ink-muted backdrop-blur-xl shadow-gold-sm transition-colors hover:border-gold-500/30 hover:text-gold-400"
+            className="flex items-center gap-2 rounded-xl border border-white/10 bg-navy-800/95 px-4 py-2.5 text-sm font-medium text-ink-muted shadow-gold-sm backdrop-blur-xl transition-colors hover:border-gold-500/30 hover:text-gold-400"
           >
             <Globe size={16} />
             <span>{currentLang?.label || "English"}</span>

@@ -24,7 +24,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${displayFont.variable} ${sansFont.variable}`}>
+    <html
+      lang="en"
+      className={`${displayFont.variable} ${sansFont.variable}`}
+    >
       <body className="bg-navy-900 text-ink antialiased font-sans">
         {children}
         <Translator />

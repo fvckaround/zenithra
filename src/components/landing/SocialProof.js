@@ -106,27 +106,10 @@ const EVENTS = [
 ];
 
 const TIMES = [
-  "just now",
-  "1 min ago",
-  "2 mins ago",
-  "3 mins ago",
-  "4 mins ago",
-  "5 mins ago",
-  "6 mins ago",
-  "7 mins ago",
-  "8 mins ago",
-  "9 mins ago",
-  "10 mins ago",
-  "11 mins ago",
-  "12 mins ago",
-  "14 mins ago",
-  "16 mins ago",
-  "18 mins ago",
-  "20 mins ago",
-  "23 mins ago",
-  "25 mins ago",
-  "28 mins ago",
-  "30 mins ago",
+  "just now", "1 min ago", "2 mins ago", "3 mins ago", "4 mins ago",
+  "5 mins ago", "6 mins ago", "7 mins ago", "8 mins ago", "9 mins ago",
+  "10 mins ago", "12 mins ago", "14 mins ago", "16 mins ago", "18 mins ago",
+  "20 mins ago", "23 mins ago", "25 mins ago", "28 mins ago", "30 mins ago",
 ];
 
 const TYPE_EMOJI = {
@@ -152,7 +135,6 @@ function randomTime() {
 export default function SocialProof() {
   const [visible, setVisible] = useState(null);
   const [queue, setQueue] = useState([]);
-  const [queueIndex, setQueueIndex] = useState(0);
 
   useEffect(() => {
     setQueue(shuffle(EVENTS));
@@ -170,13 +152,8 @@ export default function SocialProof() {
       setVisible({ ...event, time: randomTime() });
       currentIndex++;
 
-      hideTimer = setTimeout(() => {
-        setVisible(null);
-      }, 4500);
-
-      nextTimer = setTimeout(() => {
-        showNext();
-      }, 7500);
+      hideTimer = setTimeout(() => setVisible(null), 4500);
+      nextTimer = setTimeout(showNext, 7500);
     };
 
     const startTimer = setTimeout(showNext, 3000);
@@ -189,22 +166,18 @@ export default function SocialProof() {
   }, [queue]);
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 w-72">
+    <div className="fixed top-24 right-6 z-50 w-72">
       <AnimatePresence>
         {visible && (
           <motion.div
-            key={visible.name + visible.time + Math.random()}
-            initial={{ opacity: 0, x: -20, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -20, scale: 0.95 }}
+            key={visible.name + visible.time}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center gap-3 rounded-xl border border-white/10 bg-navy-800/95 px-4 py-3 shadow-gold-sm backdrop-blur-xl"
           >
-            <div
-              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base ${
-                TYPE_COLOR[visible.action] || "bg-navy-700 text-ink-muted"
-              }`}
-            >
+            <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base ${TYPE_COLOR[visible.action] || "bg-navy-700 text-ink-muted"}`}>
               {TYPE_EMOJI[visible.action]}
             </div>
             <div className="min-w-0 flex-1">
